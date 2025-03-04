@@ -10,11 +10,13 @@ public class PlayerController : MonoBehaviour
     private float forwardInput;
 
     public string inputID;
+    public int playerIndex;
+    private ScoreHandler scoreHandler;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        scoreHandler = FindObjectOfType<ScoreHandler>();
     }
 
     // Update is called once per frame
@@ -30,8 +32,21 @@ public class PlayerController : MonoBehaviour
         transform.Rotate(Vector3.up, Time.deltaTime * turnSpeed * horizontalInput);
     }
 
-    private void OnTriggerEnter(Collider collision)
+    private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("you have reached the finish line! :D");
-    }   
+        if (other.CompareTag("FinishLine"))
+        {
+            Debug.Log("you have reached the finish line! :D");
+        } 
+    }  
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            scoreHandler.AddHit(playerIndex);
+            Debug.Log("hit detected! player " + playerIndex + " hit an obstacle boooo bad");
+        }
+    }
+
 }
